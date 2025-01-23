@@ -45,5 +45,3 @@ Thumbs.db
 
 docker/volumes
 .env
-
-.vscode
