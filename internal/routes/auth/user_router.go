@@ -7,7 +7,6 @@ import (
 )
 
 func AuthRouter(app *fiber.App) {
-	auth_handler.InitAuthHandler()
 	authGroup := app.Group("/auth")
 	authGroup.Post("/login", auth_handler.Login)
 }

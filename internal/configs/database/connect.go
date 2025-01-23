@@ -26,7 +26,7 @@ type Config struct {
 	DB          *pgxpool.Pool
 }
 
-var Db *gorm.DB
+var db *gorm.DB
 
 var tables = []interface{}{
 	&users_model.User{},
@@ -48,22 +48,21 @@ func ConnectDatabase() (*gorm.DB, error) {
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", config.Host, config.Port, config.User, config.Password, config.DBName, config.SSLMode)
 
 	var err error
-	Db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatalf("Unable to connect to database using GORM: %v", err)
 		return nil, err
 	}
 
 	if config.AutoMigrate {
-		err := AutoMigrateModels(Db)
+		err := AutoMigrateModels(db)
 		if err != nil {
 			log.Fatalf("Error migrating database: %v", err)
 			return nil, err
 		}
 	}
 
-	log.Println("Database connected and tables migrated successfully.")
-	return Db, nil
+	log.Println("Database connected and tables migrated successfully!!!")
+	return db, nil
 }
 
 func AutoMigrateModels(db *gorm.DB) error {
@@ -78,6 +77,6 @@ func AutoMigrateModels(db *gorm.DB) error {
 }
 
 func AddDatabaseContext(c fiber.Ctx) error {
-	c.Locals(constants.Db, Db)
+	c.Locals(constants.Db, db)
 	return c.Next()
 }

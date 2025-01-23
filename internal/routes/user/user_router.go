@@ -8,8 +8,6 @@ import (
 )
 
 func UserRouter(app *fiber.App) {
-	users_handler.InitUserHandler()
-
 	userGroup := app.Group("/user", middlewares.VerifyToken)
 	userGroup.Get("/", users_handler.GetAllUser)
 	userGroup.Get("/:id", users_handler.GetUserById)

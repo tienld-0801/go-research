@@ -1,10 +1,11 @@
-package auth_services
+package auth_service
 
 import (
 	users_model "go-backend/app/models/users"
 	auth_dto "go-backend/app/services/auth/dto"
 	exception_configs "go-backend/internal/configs/exception"
 	"go-backend/internal/constants"
+
 	"log"
 	"os"
 
@@ -20,13 +21,18 @@ type IAuthService interface {
 	Login(c fiber.Ctx) error
 }
 
-type AuthService struct{}
+type AuthService struct {
+	db *gorm.DB
+}
+
+func NewAuthService(db *gorm.DB) IAuthService {
+	return &AuthService{db: db}
+}
 
 func (s *AuthService) Login(c fiber.Ctx) error {
 	auth := new(auth_dto.AuthDTO)
 	cv := c.Locals(constants.CustomValidator).(*exception_configs.CustomValidator)
 	jsonResponse := c.Locals(constants.JSONResponse).(func(c fiber.Ctx, status int, message string, data interface{}) error)
-	db := c.Locals(constants.Db).(*gorm.DB)
 
 	if err := c.Bind().Body(auth); err != nil {
 		return jsonResponse(c, fiber.StatusBadRequest, "Params is not empty", nil)
@@ -39,7 +45,7 @@ func (s *AuthService) Login(c fiber.Ctx) error {
 
 	var user users_model.User
 
-	if err := db.Where("email = ?", auth.Email).First(&user).Error; err != nil {
+	if err := s.db.Where("email = ?", auth.Email).First(&user).Error; err != nil {
 		return jsonResponse(c, fiber.StatusUnauthorized, "Email not found", nil)
 	}
 

@@ -1,29 +1,29 @@
 package users_handler
 
 import (
+	register_service "go-backend/app/services"
 	users_service "go-backend/app/services/user"
+	"go-backend/internal/constants"
 
 	"github.com/gofiber/fiber/v3"
 )
 
-var userService users_service.IUserService
-
-func InitUserHandler() {
-	userService = &users_service.UserService{}
-}
-
 func GetAllUser(c fiber.Ctx) error {
-	return userService.GetAllUser(c)
+	us := register_service.GetServiceContext[users_service.IUserService](c, constants.UserService)
+	return us.GetAllUser(c)
 }
 
 func GetUserById(c fiber.Ctx) error {
-	return userService.GetUserById(c)
+	us := register_service.GetServiceContext[users_service.IUserService](c, constants.UserService)
+	return us.GetUserById(c)
 }
 
 func CreateUser(c fiber.Ctx) error {
-	return userService.CreateUser(c)
+	us := register_service.GetServiceContext[users_service.IUserService](c, constants.UserService)
+	return us.CreateUser(c)
 }
 
 func DeleteUser(c fiber.Ctx) error {
-	return userService.DeleteUser(c)
+	us := register_service.GetServiceContext[users_service.IUserService](c, constants.UserService)
+	return us.DeleteUser(c)
 }

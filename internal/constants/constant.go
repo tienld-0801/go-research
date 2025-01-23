@@ -5,4 +5,6 @@ var (
 	Db              = "Database"
 	CustomValidator = "CustomValidator"
 	VerifyToken     = "VerifyToken"
+	UserService     = "UserService"
+	AuthService     = "AuthService"
 )

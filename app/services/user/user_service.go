@@ -19,14 +19,18 @@ type IUserService interface {
 }
 
 type UserService struct {
+	db *gorm.DB
+}
+
+func NewUserService(db *gorm.DB) IUserService {
+	return &UserService{db: db}
 }
 
 func (s *UserService) GetAllUser(c fiber.Ctx) error {
 	users := new([]users_model.User)
 	jsonResponse := c.Locals(constants.JSONResponse).(func(c fiber.Ctx, status int, message string, data interface{}) error)
-	db := c.Locals(constants.Db).(*gorm.DB)
 
-	if err := db.Find(&users).Error; err != nil {
+	if err := s.db.Find(&users).Error; err != nil {
 		return jsonResponse(c, fiber.StatusBadRequest, "Failed to get users", nil)
 	}
 
@@ -47,9 +51,8 @@ func (s *UserService) GetUserById(c fiber.Ctx) error {
 	id := c.Params("id")
 	user := new(users_model.User)
 	jsonResponse := c.Locals(constants.JSONResponse).(func(c fiber.Ctx, status int, message string, data interface{}) error)
-	db := c.Locals(constants.Db).(*gorm.DB)
 
-	if err := db.First(&user, id).Error; err != nil {
+	if err := s.db.First(&user, id).Error; err != nil {
 		return jsonResponse(c, fiber.StatusBadRequest, "User not found", nil)
 	}
 
@@ -60,7 +63,6 @@ func (s *UserService) CreateUser(c fiber.Ctx) error {
 	user := new(user_dto.UserDTO)
 	cv := c.Locals(constants.CustomValidator).(*exception_configs.CustomValidator)
 	jsonResponse := c.Locals(constants.JSONResponse).(func(c fiber.Ctx, status int, message string, data interface{}) error)
-	db := c.Locals(constants.Db).(*gorm.DB)
 
 	if err := c.Bind().Body(user); err != nil {
 		return jsonResponse(c, fiber.StatusBadRequest, "Params is not empty", nil)
@@ -74,7 +76,7 @@ func (s *UserService) CreateUser(c fiber.Ctx) error {
 
 	var existingUser users_model.User
 
-	if err := db.Where("email = ?", user.Email).First(&existingUser).Error; err == nil {
+	if err := s.db.Where("email = ?", user.Email).First(&existingUser).Error; err == nil {
 		return jsonResponse(c, fiber.StatusBadRequest, "Email already exists", nil)
 	} else if err != gorm.ErrRecordNotFound {
 		return jsonResponse(c, fiber.StatusInternalServerError, "Database error", nil)
@@ -92,7 +94,7 @@ func (s *UserService) CreateUser(c fiber.Ctx) error {
 		Password: hashedPassword,
 	}
 
-	if err := db.Create(&newUser).Error; err != nil {
+	if err := s.db.Create(&newUser).Error; err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Failed to create user"})
 	}
 
@@ -106,13 +108,12 @@ func (s *UserService) DeleteUser(c fiber.Ctx) error {
 	id := c.Params("id")
 	user := new(user_dto.UserDTO)
 	jsonResponse := c.Locals(constants.JSONResponse).(func(c fiber.Ctx, status int, message string, data interface{}) error)
-	db := c.Locals(constants.Db).(*gorm.DB)
 
-	if err := db.First(&user, id).Error; err != nil {
+	if err := s.db.First(&user, id).Error; err != nil {
 		return jsonResponse(c, fiber.StatusBadRequest, "User not found", nil)
 	}
 
-	if err := db.Delete(&user).Error; err != nil {
+	if err := s.db.Delete(&user).Error; err != nil {
 		return jsonResponse(c, fiber.StatusBadRequest, "Failed to delete user", nil)
 	}
 

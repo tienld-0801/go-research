@@ -22,17 +22,17 @@ services:
     volumes:
       - ./volumes/db/data:/var/lib/postgresql/data
 
-  api:
-    build:
-      context: ../
-      dockerfile: Dockerfile
-    restart: always
-    environment:
-      <<: *shared-api-env
-    ports:
-      - ${API_PORT:-4000}:${API_PORT:-4000}
-    depends_on:
-      - database
+  # api:
+  #   build:
+  #     context: ../
+  #     dockerfile: Dockerfile
+  #   restart: always
+  #   environment:
+  #     <<: *shared-api-env
+  #   ports:
+  #     - ${API_PORT:-4000}:${API_PORT:-4000}
+  #   depends_on:
+  #     - database
 
 
 
