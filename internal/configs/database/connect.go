@@ -53,11 +53,7 @@ func ConnectDatabase() (*gorm.DB, error) {
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", config.Host, config.Port, config.User, config.Password, config.DBName, config.SSLMode)
 
 	var err error
-	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
-		// NamingStrategy: schema.NamingStrategy{
-		// 	SingularTable: true, // không dùng số nhiều với table name
-		// },
-	})
+	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +79,6 @@ func AutoMigrateModels(db *gorm.DB) error {
 		}
 	}
 
-	// Create admin account in the first ime
 	const defaultName = "Admin"
 	const defaultEmail = "admin@gmail.com"
 	const defaultPassword = "admin123"
@@ -101,7 +96,7 @@ func AutoMigrateModels(db *gorm.DB) error {
 			Name:     defaultName,
 			Email:    defaultEmail,
 			Password: string(hashedPassword),
-			Role:     constants.RoleAdmin, // giả sử 1 là role admin
+			Role:     constants.RoleAdmin,
 		}
 		if err := db.Create(&admin).Error; err != nil {
 			return err
