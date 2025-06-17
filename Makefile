@@ -15,3 +15,7 @@ update-dependencies:
 # run docker
 docker-run:
 	docker compose -f docker/docker-compose.yaml up -d
+
+# down docker
+docker-down:
+	docker compose -f docker/docker-compose.yaml down

@@ -12,6 +12,7 @@ import (
 func RegisterRoutes(app *fiber.App) {
 	app.Get("/", global_handler.Index)
 	app.Get("/metrics", monitor.New())
-	auth_router.AuthRouter(app)
-	user_router.UserRouter(app)
+	api := app.Group("/api")
+	auth_router.AuthRouter(api)
+	user_router.UserRouter(api)
 }

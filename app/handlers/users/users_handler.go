@@ -13,9 +13,9 @@ func GetAllUser(c fiber.Ctx) error {
 	return us.GetAllUser(c)
 }
 
-func GetUserById(c fiber.Ctx) error {
+func GetUserByUUID(c fiber.Ctx) error {
 	us := register_service.GetServiceContext[users_service.IUserService](c, constants.UserService)
-	return us.GetUserById(c)
+	return us.GetUserByUUID(c)
 }
 
 func CreateUser(c fiber.Ctx) error {

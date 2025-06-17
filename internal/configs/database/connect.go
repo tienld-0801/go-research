@@ -2,7 +2,9 @@ package database_configs
 
 import (
 	"fmt"
+	order_model "go-backend/app/models/orders"
 	products_model "go-backend/app/models/products"
+	receipt_model "go-backend/app/models/receipts"
 	users_model "go-backend/app/models/users"
 	"go-backend/internal/constants"
 	"log"
@@ -10,6 +12,7 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -31,6 +34,8 @@ var db *gorm.DB
 var tables = []interface{}{
 	&users_model.User{},
 	&products_model.Product{},
+	&order_model.Order{},
+	&receipt_model.Receipt{},
 }
 
 func ConnectDatabase() (*gorm.DB, error) {
@@ -73,6 +78,34 @@ func AutoMigrateModels(db *gorm.DB) error {
 			return fmt.Errorf("failed to auto migrate model %T: %v", model, err)
 		}
 	}
+
+	const defaultName = "Admin"
+	const defaultEmail = "admin@gmail.com"
+	const defaultPassword = "admin123"
+
+	var count int64
+	if err := db.Model(&users_model.User{}).Where("email = ?", defaultEmail).Count(&count).Error; err != nil {
+		return err
+	}
+	if count == 0 {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(defaultPassword), bcrypt.DefaultCost)
+		if err != nil {
+			return err
+		}
+		admin := users_model.User{
+			Name:     defaultName,
+			Email:    defaultEmail,
+			Password: string(hashedPassword),
+			Role:     constants.RoleAdmin,
+		}
+		if err := db.Create(&admin).Error; err != nil {
+			return err
+		}
+		fmt.Println("✅ Admin account created: username=admin, password=admin123")
+	} else {
+		fmt.Println("ℹ️ Admin account already exists, skip seeding.")
+	}
+
 	return nil
 }
 

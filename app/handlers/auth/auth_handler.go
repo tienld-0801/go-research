@@ -12,3 +12,9 @@ func Login(c fiber.Ctx) error {
 
 	return as.Login(c)
 }
+
+func RefreshToken(c fiber.Ctx) error {
+	as := c.Locals((constants.AuthService)).(auth_service.IAuthService)
+
+	return as.RefreshToken(c)
+}
