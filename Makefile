@@ -1,4 +1,5 @@
 # Description: Makefile for go project
+
 # run project
 run:
 	air
@@ -6,6 +7,10 @@ run:
 # install dependencies
 install:
 	go mod tidy
+
+# update all dependencies
+update-dependencies:
+	go get -u ./...
 
 # run docker
 docker-run:

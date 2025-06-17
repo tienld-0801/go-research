@@ -12,6 +12,7 @@ import (
 	"go-backend/internal/routes"
 	"go-backend/internal/utils"
 	"log"
+	"strings"
 
 	"github.com/gofiber/fiber/v3"
 	"gorm.io/gorm"
@@ -42,6 +43,10 @@ func NewServer() *Server {
 
 func (s *Server) Start() error {
 	port := version.GetInfoVersion()
+
+	if !strings.HasPrefix(port, ":") {
+		port = ":" + port
+	}
 
 	if err := s.App.Listen(port, fiber.ListenConfig{
 		DisableStartupMessage: true,

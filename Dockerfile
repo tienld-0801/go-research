@@ -1,12 +1,19 @@
-FROM golang:1.23-alpine
+FROM golang:1.24.4-alpine AS builder
 
-WORKDIR /api
+WORKDIR /app
 
 COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
 
-RUN go build -o /api/tmp/main ./cmd
+RUN go build -o /app/main ./cmd
 
-CMD ["/api/tmp/main"]
+FROM alpine:latest
+
+RUN apk add --no-cache netcat-openbsd
+COPY --from=builder /app/main /api/tmp/main
+
+WORKDIR /api/tmp
+
+CMD ["./main"]
