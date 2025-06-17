@@ -1,3 +1,5 @@
+name: go-api
+
 x-shared-env: &shared-api-env
   APP_PORT: ${APP_PORT:-4000}
   DB_HOST: ${DB_HOST:-database}
@@ -17,23 +19,48 @@ services:
       PGUSER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
       POSTGRES_DB: ${DB_NAME:-postgres}
+    healthcheck:
+     test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+     interval: 5s
+     timeout: 3s
+     retries: 5
     ports:
       - ${DB_PORT:-5432}:${DB_PORT:-5432}
+
     volumes:
       - ./volumes/db/data:/var/lib/postgresql/data
 
-  # api:
-  #   build:
-  #     context: ../
-  #     dockerfile: Dockerfile
-  #   restart: always
-  #   environment:
-  #     <<: *shared-api-env
-  #     DB_HOST: database
-  #   ports:
-  #     - ${API_PORT:-4000}:${API_PORT:-4000}
-  #   depends_on:
-  #     - database
+  api:
+    container_name: api
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      <<: *shared-api-env
+      DB_HOST: database
+      APP_PORT: 4000
+    depends_on:
+      database:
+       condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 4000"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - default
 
-
+  nginx:
+    image: nginx:latest
+    restart: always
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "8080:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - default
 

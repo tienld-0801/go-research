@@ -9,7 +9,19 @@ import (
 
 func Logger() fiber.Handler {
 	return logger.New(logger.Config{
-		Format:       "\u001b[36m${time}\u001b[0m \u001b[32m${ip}\u001b[0m \u001b[33m${status}\u001b[0m -\u001b[33m${latency}\u001b[0m \u001b[34m${method}\u001b[0m \u001b[31m${path}\u001b[0m ${error}\n",
+		Format: "\u001b[36m${time}\u001b[0m " +
+			"\u001b[32m${ip}\u001b[0m " +
+			"\u001b[33m${status}\u001b[0m - " +
+			"\u001b[33m${latency}\u001b[0m " +
+			"\u001b[34m${method}\u001b[0m " +
+			"\u001b[31m${path}\u001b[0m " +
+			"[proto=\u001b[35m${protocol}\u001b[0m] ${error}\n",
+
+		CustomTags: map[string]logger.LogFunc{
+			"protocol": func(output logger.Buffer, c fiber.Ctx, data *logger.Data, extraParam string) (int, error) {
+				return output.WriteString(string(c.Protocol()))
+			},
+		},
 		TimeInterval: 500 * time.Millisecond,
 		TimeZone:     "Local",
 	})
