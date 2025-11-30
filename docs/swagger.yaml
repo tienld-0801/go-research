@@ -1,0 +1,106 @@
+basePath: /api
+definitions:
+  auth_handler.LoginRequest:
+    properties:
+      email:
+        example: admin@gmail.com
+        type: string
+      password:
+        example: admin123
+        type: string
+    type: object
+  auth_handler.RefreshTokenRequest:
+    properties:
+      refresh_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+    type: object
+host: localhost:4000
+info:
+  contact:
+    email: support@example.com
+    name: API Support
+  description: API documentation for Go Backend application
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Go Backend API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user and return JWT tokens
+      parameters:
+      - description: Login credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth_handler.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully authenticated
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: User login
+      tags:
+      - Authentication
+  /auth/refreshToken:
+    post:
+      consumes:
+      - application/json
+      description: Get new access token using refresh token
+      parameters:
+      - description: Refresh token
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/auth_handler.RefreshTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully refreshed token
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Refresh access token
+      tags:
+      - Authentication
+schemes:
+- http
+- https
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
