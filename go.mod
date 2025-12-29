@@ -3,7 +3,7 @@ module go-backend
 go 1.25.0
 
 require (
-	github.com/go-playground/validator/v10 v10.29.0
+	github.com/go-playground/validator/v10 v10.30.1
 	github.com/gofiber/contrib/monitor v0.1.2
 	github.com/gofiber/contrib/v3/swaggerui v1.0.0-rc.1
 	github.com/gofiber/fiber/v3 v3.0.0-rc.3
@@ -30,7 +30,7 @@ require (
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/andybalholm/brotli v1.2.0 // indirect
-	github.com/gabriel-vasile/mimetype v1.4.11 // indirect
+	github.com/gabriel-vasile/mimetype v1.4.12 // indirect
 	github.com/go-openapi/analysis v0.24.1 // indirect
 	github.com/go-openapi/errors v0.22.4 // indirect
 	github.com/go-openapi/jsonpointer v0.22.3 // indirect
