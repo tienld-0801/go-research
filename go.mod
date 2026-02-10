@@ -7,7 +7,7 @@ require (
 	github.com/gofiber/contrib/monitor v0.1.2
 	github.com/gofiber/contrib/v3/swaggerui v1.0.0
 	github.com/gofiber/fiber/v3 v3.0.0
-	github.com/golang-jwt/jwt/v5 v5.3.0
+	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/jackc/pgx/v4 v4.18.3
 	github.com/lib/pq v1.11.2
 	github.com/swaggo/swag v1.16.6
