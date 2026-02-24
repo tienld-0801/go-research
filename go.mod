@@ -6,7 +6,7 @@ require (
 	github.com/go-playground/validator/v10 v10.30.1
 	github.com/gofiber/contrib/monitor v0.1.2
 	github.com/gofiber/contrib/v3/swaggerui v1.0.0
-	github.com/gofiber/fiber/v3 v3.0.0
+	github.com/gofiber/fiber/v3 v3.1.0
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/jackc/pgx/v4 v4.18.3
 	github.com/lib/pq v1.11.2
