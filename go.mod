@@ -9,7 +9,7 @@ require (
 	github.com/gofiber/fiber/v3 v3.0.0
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/jackc/pgx/v4 v4.18.3
-	github.com/lib/pq v1.11.2
+	github.com/lib/pq v1.12.1
 	github.com/swaggo/swag v1.16.6
 	golang.org/x/crypto v0.48.0
 	gorm.io/driver/postgres v1.6.0
